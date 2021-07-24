@@ -5,65 +5,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
-  <link class="main-stylesheet" href="pages/css/themes/light.css" rel="stylesheet" type="text/css">
-
-  <script>
-      function createTable(rows, lines){
-        this.rows  = rows;
-        this.lines = lines;
-
-        let Body  = document.getElementById('table_id_example');
-        let Table = document.createElement('table');
-
-        let tHead = Table.createTHead()
-        let lRow  = document.createElement('tr');
-        for(let j=0; j<this.lines; j++){
-          let textNode = document.createTextNode('Column ,' + j);
-          let lLine    = document.createElement('th');
-          lLine.appendChild(textNode);
-          lRow.appendChild(lLine);
-        }
-        tHead.appendChild(lRow);
-        Body.appendChild(tHead);
-
-        let tBody = Table.createTBody()
-        for(let i=0; i<this.rows; i++){
-          let lRow = document.createElement('tr');
-          for(let j=0; j<this.lines; j++){
-            let textNode = document.createTextNode(i + ',' + j);
-            let lLine    = document.createElement('td');
-            lLine.appendChild(textNode);
-            lRow.appendChild(lLine);
-          }
-          tBody.appendChild(lRow);
-        }
-        Body.appendChild(tBody);
-      }
-
-      window.onload=function(){
-        createTable(10, 7);
-        $('#table_id_example').DataTable();
-      }
-  </script>
+  <!-- DataTables CSS -->
+  <link class="main-stylesheet" type="text/css" rel="stylesheet" href="pages/css/themes/light.css" >
+  <link type="text/css" rel="stylesheet" href="http://cdn.datatables.net/1.10.15/css/jquery.dataTables.css">
+  <link type="text/css" rel="stylesheet" href="sweetalert2.min.css">
 </head>
 
 <body>
-  <!-- DataTables CSS -->
-  <link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.15/css/jquery.dataTables.css">
   <!-- jQuery -->
   <script type="text/javascript" charset="utf8" src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">  </script>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+          integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
   <!-- DataTables -->
   <script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/1.10.15/js/jquery.dataTables.js"></script>
-
   <!-- sweetalert2 -->
   <script src="sweetalert2.all.min.js"></script>
   <script src="sweetalert2.min.js"></script>
-  <link rel="stylesheet" href="sweetalert2.min.css">
-
   <!-- ddrising -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
   <script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script>
+
 
   <!-- body -->
   <div class="card-body">
@@ -71,7 +33,7 @@
       <div class="col-md-6">
         <form role="form">
           <div class="form-group form-group-default">
-            <label class="label-lg">姓名</label>
+            <label>姓名</label>
             <input type="text" placeholder="input" class="form-control">
           </div>
 
@@ -81,7 +43,7 @@
           </div>
 
           <div class="form-group form-group-default">
-            <label class="label-sm">聯絡地址</label>
+            <label>聯絡地址</label>
             <input type="text" placeholder="input" class="form-control">
           </div>
         </form>
@@ -96,7 +58,7 @@
   <br>
   <br>
 
-  <table id="table_id_example" class="display"></table>
+  <table id="table"></table>
 
   <!-- script button -->
   <script>
@@ -108,9 +70,144 @@
     }
   </script>
 
-  <!-- script table -->
   <script>
-
+    var jqxhr = $.getJSON( "../result.json", function() {
+      console.log( "success" );
+    })
   </script>
+
+  <!-- script table -->
+  <script type="text/javascript">
+        function json2table(jsonString, $table) {
+            var json = JSON.parse(jsonString);
+            var cols = Object.keys(json[0]);
+
+            var headerRow = '';
+            var bodyRows = '';
+
+            function capitalizeFirstLetter(string) {
+                return string.charAt(0).toUpperCase() + string.slice(1);
+            }
+
+            $table.html('<thead><tr></tr></thead><tbody></tbody>');
+
+            cols.map(function (col) {
+                headerRow += '<th>' + capitalizeFirstLetter(col) + '</th>';
+            });
+
+            json.map(function (row) {
+                bodyRows += '<tr>';
+
+                cols.map(function (colName) {
+                    bodyRows += '<td>' + row[colName] + '</td>';
+                })
+
+                bodyRows += '</tr>';
+            });
+
+            $table.find('thead tr').append(headerRow);
+            $table.find('tbody').append(bodyRows);
+        }
+
+        var json_data =
+        `[{
+            "日期": "2021年7月23日",
+            "收盤": 148.56,
+            "開盤": 147.68,
+            "高": 148.71,
+            "低": 146.93,
+            "交易量": "71.45M",
+            "漲跌幅": "1.20%"
+          },
+          {
+            "日期": "2021年7月22日",
+            "收盤": 146.8,
+            "開盤": 145.93,
+            "高": 148.2,
+            "低": 145.81,
+            "交易量": "77.34M",
+            "漲跌幅": "0.96%"
+          },
+          {
+            "日期": "2021年7月21日",
+            "收盤": 145.4,
+            "開盤": 145.47,
+            "高": 146.12,
+            "低": 144.68,
+            "交易量": "74.99M",
+            "漲跌幅": "-0.51%"
+          },
+          {
+            "日期": "2021年7月20日",
+            "收盤": 146.15,
+            "開盤": 143.52,
+            "高": 147.07,
+            "低": 143,
+            "交易量": "96.35M",
+            "漲跌幅": "2.60%"
+          },
+          {
+            "日期": "2021年7月19日",
+            "收盤": 142.45,
+            "開盤": 143.75,
+            "高": 144.07,
+            "低": 141.67,
+            "交易量": "121.44M",
+            "漲跌幅": "-2.69%"
+          },
+          {
+            "日期": "2021年7月16日",
+            "收盤": 146.39,
+            "開盤": 148.46,
+            "高": 149.76,
+            "低": 145.88,
+            "交易量": "93.25M",
+            "漲跌幅": "-1.41%"
+          },
+          {
+            "日期": "2021年7月15日",
+            "收盤": 148.48,
+            "開盤": 149.25,
+            "高": 149.98,
+            "低": 147.1,
+            "交易量": "106.82M",
+            "漲跌幅": "-0.45%"
+          },
+          {
+            "日期": "2021年7月14日",
+            "收盤": 149.15,
+            "開盤": 148,
+            "高": 149.57,
+            "低": 147.7,
+            "交易量": "127.05M",
+            "漲跌幅": "2.41%"
+          },
+          {
+            "日期": "2021年7月13日",
+            "收盤": 145.64,
+            "開盤": 143.7,
+            "高": 147.46,
+            "低": 143.7,
+            "交易量": "100.83M",
+            "漲跌幅": "0.79%"
+          },
+          {
+            "日期": "2021年7月12日",
+            "收盤": 144.5,
+            "開盤": 146.22,
+            "高": 146.22,
+            "低": 144.04,
+            "交易量": "76.30M",
+            "漲跌幅": "-0.42%"
+          }]`;
+
+        json2table(json_data, $("#table"));
+
+        $('#table').DataTable();
+    </script>
+
+    <script>
+
+    </script>
 </body>
 </html>
