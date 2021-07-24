@@ -1,29 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tw">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
   <link class="main-stylesheet" href="pages/css/themes/light.css" rel="stylesheet" type="text/css">
+
+  <script>
+      function createTable(rows, lines){
+        this.rows  = rows;
+        this.lines = lines;
+
+        let Body  = document.getElementById('table_id_example');
+        let Table = document.createElement('table');
+
+        let tHead = Table.createTHead()
+        let lRow  = document.createElement('tr');
+        for(let j=0; j<this.lines; j++){
+          let textNode = document.createTextNode('Column ,' + j);
+          let lLine    = document.createElement('th');
+          lLine.appendChild(textNode);
+          lRow.appendChild(lLine);
+        }
+        tHead.appendChild(lRow);
+        Body.appendChild(tHead);
+
+        let tBody = Table.createTBody()
+        for(let i=0; i<this.rows; i++){
+          let lRow = document.createElement('tr');
+          for(let j=0; j<this.lines; j++){
+            let textNode = document.createTextNode(i + ',' + j);
+            let lLine    = document.createElement('td');
+            lLine.appendChild(textNode);
+            lRow.appendChild(lLine);
+          }
+          tBody.appendChild(lRow);
+        }
+        Body.appendChild(tBody);
+      }
+
+      window.onload=function(){
+        createTable(10, 7);
+        $('#table_id_example').DataTable();
+      }
+  </script>
 </head>
 
 <body>
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.15/css/jquery.dataTables.css">
+  <!-- jQuery -->
+  <script type="text/javascript" charset="utf8" src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">  </script>
+  <!-- DataTables -->
+  <script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/1.10.15/js/jquery.dataTables.js"></script>
+
+  <!-- sweetalert2 -->
   <script src="sweetalert2.all.min.js"></script>
   <script src="sweetalert2.min.js"></script>
   <link rel="stylesheet" href="sweetalert2.min.css">
 
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
-    
-  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
-
+  <!-- ddrising -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script>
-
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
-  <!-- 若需相容 IE11，要加載 Promise Polyfill-->
   <script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script>
 
-
+  <!-- body -->
   <div class="card-body">
     <div class="row">
       <div class="col-md-6">
@@ -40,35 +82,23 @@
 
           <div class="form-group form-group-default">
             <label class="label-sm">聯絡地址</label>
-            <input type="string" placeholder="input" class="form-control">
+            <input type="text" placeholder="input" class="form-control">
           </div>
         </form>
       </div>
       <div style="text-align:right">
-        <button type="button" float:right onclick="aubmit()">送出</button>
+        <button type="submit" onclick="aubmit()">送出</button>
       </div>
     </div>
   </div>
 
-  <table id="table_id_example" class="display">
-    <thead>
-        <tr>
-            <th>Column 1</th>
-            <th>Column 2</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Row 1 Data 1</td>
-            <td>Row 1 Data 2</td>
-        </tr>
-        <tr>
-            <td>Row 2 Data 1</td>
-            <td>Row 2 Data 2</td>
-        </tr>
-    </tbody>
-</table>
+  <br>
+  <br>
+  <br>
 
+  <table id="table_id_example" class="display"></table>
+
+  <!-- script button -->
   <script>
     function aubmit() {
       Swal.fire(
@@ -78,35 +108,9 @@
     }
   </script>
 
+  <!-- script table -->
   <script>
-    $(document).ready( function () {
-        $('#table_id').DataTable();
-    } );
 
-    $('#example').DataTable( {
-        data: data,
-        columns: [
-            { data: 'name' },
-            { data: 'position' },
-            { data: 'salary' },
-            { data: 'office' }
-        ]
-    } );
-
-    $(document).ready( function () {
-      $('#table_id_example').DataTable( {
-        data: data,
-        columns: [
-            { data: 'name' },
-            { data: 'position' },
-            { data: 'salary' },
-            { data: 'office' }
-          ]
-        } 
-      );
-    } );
   </script>
-
 </body>
-
 </html>
