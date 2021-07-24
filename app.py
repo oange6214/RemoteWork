@@ -110,28 +110,22 @@ class base_crawler:
         return html_path
 
     def html_to_json(html_path, json_path='result.json', encoding='gbk'):
-        def word_traditional_zh(data, tra_type='s2t'):
-            op_cc = opencc.OpenCC(tra_type)
+        def word_traditional_zh(data):
+            op_cc = opencc.OpenCC('s2t')
             opc = op_cc.convert(data)
             return opc
 
-        pd_data = pd.read_html(html_path, encoding=encoding)[0]
+        html = 'output.html'
 
-        col_list = []
-        for col in pd_data.columns:
-            col_list.append(word_traditional_zh(col))
-        pd_data.columns = col_list
+        pd_data = pd.read_html(html, encoding='gbk')[0]
+        pd_data.columns = [word_traditional_zh(d) for d in pd_data.columns]
+        pd_data['日期'] = pd_data['日期'].apply(word_traditional_zh)
 
-        for date in pd_data['日期']:
-            pd_data['日期'] = word_traditional_zh(date)
+        pd_total = pd.read_html(html, encoding='gbk')[1]
+        pd_total.iloc[0] = pd_total.iloc[0].apply(word_traditional_zh)
 
-        pd_total = pd.read_html(html_path, encoding=encoding)[1]
-
-        for total in pd_total.columns:
-            pd_total[total][0] = word_traditional_zh(pd_total[total][0])
-
-        js_data = pd_data.to_json(orient='table')
-        js_total = pd_total.to_json(orient='table')
+        js_data = pd_data.to_json(orient='table', index=False)
+        js_total = pd_total.to_json(orient='table', index=False)
 
         dictA = json.loads(js_data)
         dictA['total'] = json.loads(js_total)
